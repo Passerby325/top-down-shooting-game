@@ -5,6 +5,7 @@ body {
     align-items: center;
     height: 100vh;
     background-color: #000;
+    overflow: hidden; /* Prevent scrolling */
 }
 
 #game-container {
@@ -37,7 +38,7 @@ body {
 
 .joystick {
     position: absolute;
-    bottom: 20px;
+    bottom: 50px; /* Move joystick up */
     width: 100px;
     height: 100px;
     background-color: rgba(255, 255, 255, 0.2);
@@ -46,11 +47,11 @@ body {
 }
 
 #joystick {
-    left: 20px;
+    left: 50px; /* Move joystick closer to center */
 }
 
 #shoot-joystick {
-    right: 20px;
+    right: 50px; /* Move joystick closer to center */
 }
 
 .joystick-handle {
