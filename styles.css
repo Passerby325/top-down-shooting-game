@@ -38,7 +38,7 @@ body {
 
 .joystick {
     position: absolute;
-    bottom: 50px; /* Move joystick up */
+    bottom: 100px; /* Move joystick further up */
     width: 100px;
     height: 100px;
     background-color: rgba(255, 255, 255, 0.2);
