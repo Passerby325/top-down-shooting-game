@@ -45,6 +45,14 @@ body {
     touch-action: none;
 }
 
+#joystick {
+    left: 20px;
+}
+
+#shoot-joystick {
+    right: 20px;
+}
+
 .joystick-handle {
     position: absolute;
     width: 60px;
