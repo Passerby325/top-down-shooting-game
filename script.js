@@ -33,8 +33,8 @@ let shootJoystickActive = false;
 let shootJoystickStartX, shootJoystickStartY;
 
 function initializeGame() {
-    const device = prompt("Are you playing on a phone or pc? (Enter 'phone' or 'pc')");
-    if (device.toLowerCase() === 'phone') {
+    const device = prompt("Are you playing on a phone or pc? (Enter 'ph' for phone or 'pc')");
+    if (device.toLowerCase() === 'ph') {
         isPhone = true;
         shootJoystick.style.display = "block";
     } else {
