@@ -9,7 +9,7 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-let player = { x: canvas.width / 2, y: canvas.height / 2, size: 20, speed: 5, health: 3 };
+let player = { x: canvas.width / 2, y: canvas.height / 2, size: 10, speed: 5, health: 3 }; // Player size is now 0.5 of the original
 let enemies = [];
 let bullets = [];
 let keys = {};
@@ -200,7 +200,7 @@ function update() {
 
     // Generate enemies based on the current spawn interval
     if (currentTime - lastEnemySpawnTime >= currentEnemySpawnInterval) {
-        let size = Math.random() * 20 + 10;
+        let size = Math.random() * 10 + 5; // Enemy size is now 0.5 of the original
         let x = Math.random() < 0.5 ? 0 : canvas.width;
         let y = Math.random() * canvas.height;
         enemies.push({ x, y, size, speed: baseEnemySpeed * speedMultiplier });
@@ -248,6 +248,13 @@ function draw() {
     // Draw player
     ctx.fillStyle = 'blue';
     ctx.fillRect(player.x - player.size / 2, player.y - player.size / 2, player.size, player.size);
+
+    // Draw shooting direction indicator
+    ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)';
+    ctx.beginPath();
+    ctx.moveTo(player.x, player.y);
+    ctx.lineTo(player.x + shootDirection.x * 20, player.y + shootDirection.y * 20);
+    ctx.stroke();
 
     // Draw bullets
     bullets.forEach(bullet => {
