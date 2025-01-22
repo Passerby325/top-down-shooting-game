@@ -35,3 +35,33 @@ body {
 #time {
     right: 10px;
 }
+
+.joystick {
+    position: absolute;
+    bottom: 100px; /* Move joystick further up */
+    width: 100px;
+    height: 100px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    touch-action: none;
+}
+
+#joystick {
+    left: 50px; /* Move joystick closer to center */
+}
+
+#shoot-joystick {
+    right: 50px; /* Move joystick closer to center */
+}
+
+.joystick-handle {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    touch-action: none;
+}
