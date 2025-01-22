@@ -9,7 +9,7 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-let player = { x: canvas.width / 2, y: canvas.height / 2, size: 10, speed: 5, health: 3 }; // Player size is now 0.5 of the original
+let player = { x: canvas.width / 2, y: canvas.height / 2, size: 40, speed: 5, health: 3 }; // Player size is now double the original
 let enemies = [];
 let bullets = [];
 let keys = {};
@@ -20,99 +20,12 @@ let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
 let lastFireTime = 0; // Track the last time a bullet was fired
 let lastEnemySpawnTime = 0; // Track the last time an enemy was spawned
 let startTime = null; // Track the start time of the game
-let isPhone = false; // Determine if the game is played on a phone
 let shootDirection = { x: 1, y: 0 }; // Default shooting direction
 
-const joystick = document.getElementById('joystick');
-const joystickHandle = document.getElementById('joystick-handle');
-const shootJoystick = document.getElementById('shoot-joystick');
-const shootJoystickHandle = document.getElementById('shoot-joystick-handle');
-let joystickActive = false;
-let joystickStartX, joystickStartY;
-let shootJoystickActive = false;
-let shootJoystickStartX, shootJoystickStartY;
+document.addEventListener('keydown', (e) => keys[e.key] = true);
+document.addEventListener('keyup', (e) => keys[e.key] = false);
 
-function initializeGame() {
-    const device = prompt("Are you playing on a phone or pc? (Enter 'ph' for phone or 'pc')");
-    if (device.toLowerCase() === 'ph') {
-        isPhone = true;
-        shootJoystick.style.display = "block";
-    } else {
-        isPhone = false;
-        shootJoystick.style.display = "none";
-    }
-
-    if (isPhone) {
-        joystick.addEventListener('touchstart', joystickTouchStart);
-        joystick.addEventListener('touchmove', joystickTouchMove);
-        joystick.addEventListener('touchend', joystickTouchEnd);
-
-        shootJoystick.addEventListener('touchstart', shootJoystickTouchStart);
-        shootJoystick.addEventListener('touchmove', shootJoystickTouchMove);
-        shootJoystick.addEventListener('touchend', shootJoystickTouchEnd);
-    } else {
-        canvas.addEventListener('mousemove', mouseMove);
-    }
-}
-
-function joystickTouchStart(e) {
-    joystickActive = true;
-    const touch = e.touches[0];
-    joystickStartX = touch.clientX;
-    joystickStartY = touch.clientY;
-}
-
-function joystickTouchMove(e) {
-    if (!joystickActive) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - joystickStartX;
-    const dy = touch.clientY - joystickStartY;
-    const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
-    const angle = Math.atan2(dy, dx);
-    const offsetX = Math.cos(angle) * distance;
-    const offsetY = Math.sin(angle) * distance;
-    joystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-
-    player.x += Math.cos(angle) * player.speed;
-    player.y += Math.sin(angle) * player.speed;
-
-    // Clamp player position to canvas bounds
-    player.x = Math.max(player.size / 2, Math.min(canvas.width - player.size / 2, player.x));
-    player.y = Math.max(player.size / 2, Math.min(canvas.height - player.size / 2, player.y));
-}
-
-function joystickTouchEnd() {
-    joystickActive = false;
-    joystickHandle.style.transform = 'translate(-50%, -50%)';
-}
-
-function shootJoystickTouchStart(e) {
-    shootJoystickActive = true;
-    const touch = e.touches[0];
-    shootJoystickStartX = touch.clientX;
-    shootJoystickStartY = touch.clientY;
-}
-
-function shootJoystickTouchMove(e) {
-    if (!shootJoystickActive) return;
-    const touch = e.touches[0];
-    const dx = touch.clientX - shootJoystickStartX;
-    const dy = touch.clientY - shootJoystickStartY;
-    const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
-    const angle = Math.atan2(dy, dx);
-    const offsetX = Math.cos(angle) * distance;
-    const offsetY = Math.sin(angle) * distance;
-    shootJoystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-
-    shootDirection = { x: Math.cos(angle), y: Math.sin(angle) };
-}
-
-function shootJoystickTouchEnd() {
-    shootJoystickActive = false;
-    shootJoystickHandle.style.transform = 'translate(-50%, -50%)';
-}
-
-function mouseMove(e) {
+canvas.addEventListener('mousemove', (e) => {
     const rect = canvas.getBoundingClientRect();
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
@@ -120,7 +33,7 @@ function mouseMove(e) {
     const dy = mouseY - player.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     shootDirection = { x: dx / distance, y: dy / distance };
-}
+});
 
 function fireBullet() {
     const currentTime = Date.now();
@@ -128,7 +41,7 @@ function fireBullet() {
         startTime = currentTime;
     }
     const elapsedTime = (currentTime - startTime) / 1000; // in seconds
-    const maxInterval = 500; // 0.5 seconds
+    const maxInterval = 250; // 0.25 seconds
     const minInterval = 250; // 0.25 seconds
     const maxTime = 60; // 60 seconds to reach the minimum interval
 
@@ -182,10 +95,10 @@ function update() {
     let speedMultiplier = 1 + Math.floor(timeElapsed / speedIncreaseInterval) * 0.1;
 
     // Player movement with keyboard (optional)
-    if (keys['ArrowUp'] && player.y > 0) { player.y -= player.speed; }
-    if (keys['ArrowDown'] && player.y < canvas.height - player.size) { player.y += player.speed; }
-    if (keys['ArrowLeft'] && player.x > 0) { player.x -= player.speed; }
-    if (keys['ArrowRight'] && player.x < canvas.width - player.size) { player.x += player.speed; }
+    if (keys['ArrowUp'] || keys['w']) { if (player.y > 0) player.y -= player.speed; }
+    if (keys['ArrowDown'] || keys['s']) { if (player.y < canvas.height - player.size) player.y += player.speed; }
+    if (keys['ArrowLeft'] || keys['a']) { if (player.x > 0) player.x -= player.speed; }
+    if (keys['ArrowRight'] || keys['d']) { if (player.x < canvas.width - player.size) player.x += player.speed; }
 
     // Update bullets
     bullets.forEach((bullet, index) => {
@@ -200,7 +113,7 @@ function update() {
 
     // Generate enemies based on the current spawn interval
     if (currentTime - lastEnemySpawnTime >= currentEnemySpawnInterval) {
-        let size = Math.random() * 10 + 5; // Enemy size is now 0.5 of the original
+        let size = Math.random() * 20 + 10;
         let x = Math.random() < 0.5 ? 0 : canvas.width;
         let y = Math.random() * canvas.height;
         enemies.push({ x, y, size, speed: baseEnemySpeed * speedMultiplier });
@@ -290,6 +203,5 @@ function getNearestEnemy(player, enemies) {
 }
 
 // Initialize the game and start the update loop
-initializeGame();
 update();
-setInterval(fireBullet, 500); // Automatically fire bullets every 0.5 seconds initially
+setInterval(fireBullet, 250); // Automatically fire bullets every 0.25 seconds
