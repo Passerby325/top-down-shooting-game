@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.height = window.innerHeight - 50; // Adjust height considering the navbar
 }
 
 window.addEventListener('resize', resizeCanvas);
@@ -36,9 +36,11 @@ function initializeGame() {
     const device = prompt("Are you playing on a phone or pc? (Enter 'ph' for phone or 'pc')");
     if (device.toLowerCase() === 'ph') {
         isPhone = true;
+        document.getElementById('navbar').style.display = 'block';
         shootJoystick.style.display = "block";
     } else {
         isPhone = false;
+        document.getElementById('navbar').style.display = 'none';
         shootJoystick.style.display = "none";
     }
 
@@ -128,7 +130,7 @@ function fireBullet() {
         startTime = currentTime;
     }
     const elapsedTime = (currentTime - startTime) / 1000; // in seconds
-    const maxInterval = 500; // 0.5 seconds
+    const maxInterval = 250; // 0.25 seconds
     const minInterval = 250; // 0.25 seconds
     const maxTime = 60; // 60 seconds to reach the minimum interval
 
@@ -292,4 +294,4 @@ function getNearestEnemy(player, enemies) {
 // Initialize the game and start the update loop
 initializeGame();
 update();
-setInterval(fireBullet, 500); // Automatically fire bullets every 0.5 seconds initially
+setInterval(fireBullet, 250); // Automatically fire bullets every 0.25 seconds
