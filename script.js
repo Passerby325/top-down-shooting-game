@@ -41,78 +41,85 @@ function initializeGame() {
         isPhone = false;
         shootJoystick.style.display = "none";
     }
+
+    if (isPhone) {
+        joystick.addEventListener('touchstart', joystickTouchStart);
+        joystick.addEventListener('touchmove', joystickTouchMove);
+        joystick.addEventListener('touchend', joystickTouchEnd);
+
+        shootJoystick.addEventListener('touchstart', shootJoystickTouchStart);
+        shootJoystick.addEventListener('touchmove', shootJoystickTouchMove);
+        shootJoystick.addEventListener('touchend', shootJoystickTouchEnd);
+    } else {
+        canvas.addEventListener('mousemove', mouseMove);
+    }
 }
 
-document.addEventListener('keydown', (e) => { keys[e.key] = true; });
-document.addEventListener('keyup', (e) => { keys[e.key] = false; });
+function joystickTouchStart(e) {
+    joystickActive = true;
+    const touch = e.touches[0];
+    joystickStartX = touch.clientX;
+    joystickStartY = touch.clientY;
+}
 
-if (isPhone) {
-    joystick.addEventListener('touchstart', (e) => {
-        joystickActive = true;
-        const touch = e.touches[0];
-        joystickStartX = touch.clientX;
-        joystickStartY = touch.clientY;
-    });
+function joystickTouchMove(e) {
+    if (!joystickActive) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - joystickStartX;
+    const dy = touch.clientY - joystickStartY;
+    const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
+    const angle = Math.atan2(dy, dx);
+    const offsetX = Math.cos(angle) * distance;
+    const offsetY = Math.sin(angle) * distance;
+    joystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 
-    joystick.addEventListener('touchmove', (e) => {
-        if (!joystickActive) return;
-        const touch = e.touches[0];
-        const dx = touch.clientX - joystickStartX;
-        const dy = touch.clientY - joystickStartY;
-        const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
-        const angle = Math.atan2(dy, dx);
-        const offsetX = Math.cos(angle) * distance;
-        const offsetY = Math.sin(angle) * distance;
-        joystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    player.x += Math.cos(angle) * player.speed;
+    player.y += Math.sin(angle) * player.speed;
 
-        player.x += Math.cos(angle) * player.speed;
-        player.y += Math.sin(angle) * player.speed;
+    // Clamp player position to canvas bounds
+    player.x = Math.max(player.size / 2, Math.min(canvas.width - player.size / 2, player.x));
+    player.y = Math.max(player.size / 2, Math.min(canvas.height - player.size / 2, player.y));
+}
 
-        // Clamp player position to canvas bounds
-        player.x = Math.max(player.size / 2, Math.min(canvas.width - player.size / 2, player.x));
-        player.y = Math.max(player.size / 2, Math.min(canvas.height - player.size / 2, player.y));
-    });
+function joystickTouchEnd() {
+    joystickActive = false;
+    joystickHandle.style.transform = 'translate(-50%, -50%)';
+}
 
-    joystick.addEventListener('touchend', () => {
-        joystickActive = false;
-        joystickHandle.style.transform = 'translate(-50%, -50%)';
-    });
+function shootJoystickTouchStart(e) {
+    shootJoystickActive = true;
+    const touch = e.touches[0];
+    shootJoystickStartX = touch.clientX;
+    shootJoystickStartY = touch.clientY;
+}
 
-    shootJoystick.addEventListener('touchstart', (e) => {
-        shootJoystickActive = true;
-        const touch = e.touches[0];
-        shootJoystickStartX = touch.clientX;
-        shootJoystickStartY = touch.clientY;
-    });
+function shootJoystickTouchMove(e) {
+    if (!shootJoystickActive) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - shootJoystickStartX;
+    const dy = touch.clientY - shootJoystickStartY;
+    const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
+    const angle = Math.atan2(dy, dx);
+    const offsetX = Math.cos(angle) * distance;
+    const offsetY = Math.sin(angle) * distance;
+    shootJoystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 
-    shootJoystick.addEventListener('touchmove', (e) => {
-        if (!shootJoystickActive) return;
-        const touch = e.touches[0];
-        const dx = touch.clientX - shootJoystickStartX;
-        const dy = touch.clientY - shootJoystickStartY;
-        const distance = Math.min(Math.sqrt(dx * dx + dy * dy), 40);
-        const angle = Math.atan2(dy, dx);
-        const offsetX = Math.cos(angle) * distance;
-        const offsetY = Math.sin(angle) * distance;
-        shootJoystickHandle.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    shootDirection = { x: Math.cos(angle), y: Math.sin(angle) };
+}
 
-        shootDirection = { x: Math.cos(angle), y: Math.sin(angle) };
-    });
+function shootJoystickTouchEnd() {
+    shootJoystickActive = false;
+    shootJoystickHandle.style.transform = 'translate(-50%, -50%)';
+}
 
-    shootJoystick.addEventListener('touchend', () => {
-        shootJoystickActive = false;
-        shootJoystickHandle.style.transform = 'translate(-50%, -50%)';
-    });
-} else {
-    canvas.addEventListener('mousemove', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const mouseX = e.clientX - rect.left;
-        const mouseY = e.clientY - rect.top;
-        const dx = mouseX - player.x;
-        const dy = mouseY - player.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        shootDirection = { x: dx / distance, y: dy / distance };
-    });
+function mouseMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const dx = mouseX - player.x;
+    const dy = mouseY - player.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    shootDirection = { x: dx / distance, y: dy / distance };
 }
 
 function fireBullet() {
