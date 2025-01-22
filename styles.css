@@ -14,29 +14,16 @@ body {
     height: 100vh;
 }
 
-#navbar {
-    display: none; /* Hide by default, show for phone users */
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 50px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    line-height: 50px;
-    font-size: 20px;
-}
-
 #gameCanvas {
     width: 100%;
-    height: calc(100% - 50px); /* Adjust height considering the navbar */
+    height: 100%;
     background-color: #222;
     border: 2px solid #fff;
 }
 
 #health, #time {
     position: absolute;
-    top: 60px; /* Adjust for the navbar */
+    top: 10px;
     color: white;
     font-size: 24px;
 }
@@ -47,34 +34,4 @@ body {
 
 #time {
     right: 10px;
-}
-
-.joystick {
-    position: absolute;
-    bottom: 150px; /* Move joystick further up */
-    width: 100px;
-    height: 100px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    touch-action: none;
-}
-
-#joystick {
-    left: 50px; /* Move joystick closer to center */
-}
-
-#shoot-joystick {
-    right: 50px; /* Move joystick closer to center */
-}
-
-.joystick-handle {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    background-color: rgba(255, 255, 255, 0.6);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    touch-action: none;
 }
