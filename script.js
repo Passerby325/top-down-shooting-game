@@ -16,7 +16,7 @@ let keys = {};
 let gameOver = false;
 let timeElapsed = 0;
 let baseEnemySpeed = 6; // Initial speed is now 3 times the original
-let speedIncreaseInterval = 5000; // Increase speed every 5 seconds
+let speedIncreaseInterval = 500; // Increase speed every 5 seconds
 let lastFireTime = 0; // Track the last time a bullet was fired
 let lastEnemySpawnTime = 0; // Track the last time an enemy was spawned
 let startTime = null; // Track the start time of the game
@@ -53,7 +53,7 @@ function fireBullet() {
     }
     lastFireTime = currentTime;
 
-    let bulletSpeed = 14;
+    let bulletSpeed = 30;
     bullets.push({
         x: player.x + player.size / 4,
         y: player.y + player.size / 4,
@@ -113,7 +113,7 @@ function update() {
 
     // Generate enemies based on the current spawn interval
     if (currentTime - lastEnemySpawnTime >= currentEnemySpawnInterval) {
-        let size = Math.random() * 20 + 10;
+        let size = Math.random() * 20 + 100;
         let x = Math.random() < 0.5 ? 0 : canvas.width;
         let y = Math.random() * canvas.height;
         enemies.push({ x, y, size, speed: baseEnemySpeed * speedMultiplier });
